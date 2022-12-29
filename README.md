@@ -107,3 +107,9 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 Dockerdd. If not, see http://www.gnu.org/licenses/.
+
+
+## Project information
+
+Author: Ernest Neijenhuis
+Code on Github: https://github.com/pa3hcm/dockerdd
