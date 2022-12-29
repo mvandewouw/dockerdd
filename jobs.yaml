@@ -1,0 +1,63 @@
+# Your registries
+registries:
+  dockerhub:
+    address: default
+  k8s:
+    address: registry.k8s.io
+  dev:
+    address: harbor-dev.mydomain.local/docker
+  prd:
+    address: harbor-prd.mydomain.local/docker
+
+# Lists of container images
+# Define jobs to copy lists of container images from one registry to another
+jobs:
+  k8s-to-dev:
+    source: k8s
+    target: dev
+    imagelists:
+    - kubernetes_k8s
+  dockerhub-to-dev:
+    source: dockerhub
+    target: dev
+    imagelists:
+    - gitlab
+    - kubernetes
+    - postgres
+    - vault
+  dev-to-prd:
+    source: dev
+    target: prd
+    imagelists:
+    - kubernetes_k8s
+    - kubernetes
+    - postgres
+
+# Define your imagelists down here
+imagelists:
+  gitlab:
+    - gitlab/gitlab-ee:15.7.0-ee.0
+    - gitlab/gitlab-runner-helper:ubuntu-x86_64-v14.10.2
+  kubernetes:
+    - calico/apiserver:v3.24.5
+    - calico/cni:v3.24.5
+    - calico/kube-controllers:v3.24.5
+    - calico/node:v3.24.5
+    - calico/pod2daemon-flexvol:v3.24.5
+    - calico/typha:v3.24.5
+    - grafana/grafana:9.2.3
+    - k8s.gcr.io/pause:3.6
+    - library/traefik:2.9.4
+  kubernetes_k8s:
+    - coredns:v1.9.3
+    - etcd:3.5.4-0
+    - kube-apiserver:v1.25.0
+    - kube-controller-manager:v1.25.0
+    - kube-proxy:v1.25.0
+    - kube-scheduler:v1.25.0
+    - pause:3.8
+    - coredns/coredns:v1.9.3
+  postgres:
+    - library/postgres:15.1-alpine
+  vault:
+    - library/vault:1.11.4

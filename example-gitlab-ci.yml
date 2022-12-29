@@ -1,0 +1,20 @@
+stages:
+  - sync
+
+sync:
+  stage: sync
+  tags:
+    - shell-runner
+  timeout: 3 hours  # sync may take over 1 hour, which is de default timeout for a CI stage
+  variables:
+    HUB_USER: 'docker-hub-user'
+    HUB_PASS: 'docker-hub-password'  # Best to store secrets in a vault!
+    DEV_USER: 'dev-registry-user'
+    DEV_PASS: 'dev-registry-password'
+    PRD_USER: 'prd-registry-user'
+    PRD_PASS: 'prd-registry-password'
+  script:
+    - docker login --username ${HUB_USER} --password ${HUB_PASSWD}
+    - docker login harbor-dev.mydomain.local --username ${DEV_USER} --password ${DEV_PASSWD}
+    - docker login harbor-prd.mydomain.local --username ${PRD_USER} --password ${PRD_PASSWD}
+    - python3 dockerdd.py jobs.yaml
