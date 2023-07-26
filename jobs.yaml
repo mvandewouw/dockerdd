@@ -4,6 +4,7 @@ registries:
     address: default
   k8s:
     address: registry.k8s.io
+    folder: k8s.io
   dev:
     address: harbor-dev.mydomain.local/docker
   prd:

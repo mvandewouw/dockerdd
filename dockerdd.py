@@ -29,6 +29,12 @@ for job in dddata['jobs']:
         target = dddata['jobs'][job]['target']
         source_addr = dddata['registries'][source]['address']
         target_addr = dddata['registries'][target]['address']
+
+        if 'folder' in dddata['registries'][source]:
+            target_folder = '/' + dddata['registries'][source]['folder'] + '/'
+        else:
+            target_folder = '/'
+
         print(f"- Sync imagelist {imagelist} from {source} to {target}")
 
         # Process images in given imagelist
@@ -39,7 +45,8 @@ for job in dddata['jobs']:
                 source_full = image_name + ':' + image_tag
             else:
                 source_full = source_addr + '/' + image_name + ':' + image_tag
-            target_full = target_addr + '/' + image_name + ':' + image_tag
+            
+            target_full = target_addr + target_folder + image_name + ':' + image_tag
 
             print(f"  - {image_name}:{image_tag}: ", end='', flush=True)
 

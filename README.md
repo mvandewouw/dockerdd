@@ -3,13 +3,11 @@
 Dockerdd is a simple Python script to replicate Docker images between
 registries.
 
-
 ## Why Dockerdd
 
 If you have multiple registries and want to keep some images in sync, this
 script might be your solution. You simply describe the sync in a yaml file and
 run the script.
-
 
 ## Installation
 
@@ -25,7 +23,6 @@ To install the Docker library for Python, run the following command:
 pip install docker
 ```
 
-
 ## Create the jobs file
 
 This is the structure of a jobs file, it's in yaml format:
@@ -34,8 +31,12 @@ This is the structure of a jobs file, it's in yaml format:
 registries:
   <registry-name>:
     address: <registry url without the 'http(s)://', or use 'default'>
+    folder: <an optional folder name to use at the target registry>
   <registry-name-2>:
     address: ...
+  <registry-name-3>:
+    address: ...
+    folder: ...
 
 imagelists:
   <imagelist-name>:
@@ -61,6 +62,8 @@ jobs:
 First define the registries you want to use. Define the registry's address,
 e.g. `harbor.mydomain.com/dev-images`. You can also use 'default', in that case
 Docker will use the default registry as defined by the Docker configuration.
+Optionally define a target folder location. If folder is not defined,
+the root of the target repository will be used.
 
 Next define imagelists. Each imagelist has a name and contains a list of images
 (with tags).
@@ -71,13 +74,11 @@ source registry to the target registry.
 You can define multiple jobs and imagelists. Jobs will be performed in the
 given order.
 
-
 ## Run the script
 
 ``` sh
 dockerdd.py <jobs-file>
 ```
-
 
 ## Authentication
 
@@ -85,12 +86,10 @@ Some registries require authentication, this is not handled by Dockerdd. You
 can authenticate once (manually) using `docker login`, the secrets will be
 stored in `~/.docker/config.json`.
 
-
 ## Gitlab pipeline
 
 The file `example-gitlab-ci.yml` demonstrates you how you can run this script
 in a pipeline.
-
 
 ## License: GPL 3.0
 
@@ -106,10 +105,9 @@ WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-Dockerdd. If not, see http://www.gnu.org/licenses/.
-
+Dockerdd. If not, see `http://www.gnu.org/licenses/`.
 
 ## Project information
 
 Author: Ernest Neijenhuis
-Code on Github: https://github.com/pa3hcm/dockerdd
+Code on Github: `https://github.com/pa3hcm/dockerdd`
