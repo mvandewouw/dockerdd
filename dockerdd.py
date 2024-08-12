@@ -3,14 +3,25 @@
 import docker
 import os
 import sys
-import time
 import yaml
+import json
 
 # Setup local docker client connection
 dockerclient = docker.from_env()
 
+def get_local_image_manifest_digest(image_reference: str):
+    try:
+        output = os.popen(f"docker manifest inspect -v {image_reference}").read()
+        manifest_info = json.loads(output)
+
+        digest = manifest_info['Descriptor']['digest']
+        return digest
+    except Exception as e:
+        print(f"FAIL to get local image manifest digest: {e}")
+        return None
+
 # Import yaml file
-if len(sys.argv) > 0:
+if len(sys.argv) > 1:
     job_file = sys.argv[1]
 else:
     job_file = 'jobs.yaml'
@@ -39,8 +50,10 @@ for job in dddata['jobs']:
 
         # Process images in given imagelist
         for image in dddata['imagelists'][imagelist]:
+            image_name = image['name']
+            lts = image.get('lts', False)
             result = 'ok'
-            image_name, image_tag = image.split(':')
+            image_name, image_tag = image_name.split(':')
             if source_addr == 'default':
                 source_full = image_name + ':' + image_tag
             else:
@@ -52,7 +65,7 @@ for job in dddata['jobs']:
 
             # Check if image is already in target registry
             osout = os.system(f"docker manifest inspect {target_full} > /dev/null 2>&1")
-            if osout == 0:
+            if osout == 0 and not lts:
                 print("cached... ok")
             else:
                 # Pull image from source registry
@@ -63,7 +76,7 @@ for job in dddata['jobs']:
                     print(f"FAIL: {e}")
                     if 'dockerimage' in locals():
                         del dockerimage
-                    pass
+                    continue
     
                 # Tag new registry
                 if 'dockerimage' in locals():
@@ -75,7 +88,13 @@ for job in dddata['jobs']:
                         dockerclient.images.remove(source_full)
                         if 'dockerimage' in locals():
                             del dockerimage
-                        pass
+                        continue
+                    # Get and write the local image digest to a file
+                    digest = get_local_image_manifest_digest(target_full)
+                    if digest:
+                        with open(f"digest.txt", 'a') as file:
+                            file.write(f"{target_full}@{digest}\n")
+                        print(f" (Digest written {target_full} {digest} digest.txt)")
     
                 # Push image to target registry
                 if 'dockerimage' in locals():
@@ -87,7 +106,7 @@ for job in dddata['jobs']:
                         dockerclient.images.remove(target_full)
                     except Exception as e:
                         print(f"FAIL: {e}")
-                        pass
+                        continue
     
                     # Check if image is available in target repo
                     print("verify:", end='', flush=True)
@@ -105,3 +124,4 @@ for job in dddata['jobs']:
                     except:
                         pass
                     print(result)
+

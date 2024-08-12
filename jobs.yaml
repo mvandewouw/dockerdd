@@ -25,6 +25,7 @@ jobs:
     - gitlab
     - kubernetes
     - postgres
+    - ubuntu
     - vault
   dev-to-prd:
     source: dev
@@ -37,28 +38,35 @@ jobs:
 # Define your imagelists down here
 imagelists:
   gitlab:
-    - gitlab/gitlab-ee:15.7.0-ee.0
-    - gitlab/gitlab-runner-helper:ubuntu-x86_64-v14.10.2
+    - name: gitlab/gitlab-ee:15.7.0-ee.0
+    - name: gitlab/gitlab-runner-helper:ubuntu-x86_64-v14.10.2
   kubernetes:
-    - calico/apiserver:v3.24.5
-    - calico/cni:v3.24.5
-    - calico/kube-controllers:v3.24.5
-    - calico/node:v3.24.5
-    - calico/pod2daemon-flexvol:v3.24.5
-    - calico/typha:v3.24.5
-    - grafana/grafana:9.2.3
-    - k8s.gcr.io/pause:3.6
-    - library/traefik:2.9.4
+    - name: calico/apiserver:v3.24.5
+    - name: calico/cni:v3.24.5
+    - name: calico/kube-controllers:v3.24.5
+    - name: calico/node:v3.24.5
+    - name: calico/pod2daemon-flexvol:v3.24.5
+    - name: calico/typha:v3.24.5
+    - name: grafana/grafana:9.2.3
+    - name: k8s.gcr.io/pause:3.6
+    - name: library/traefik:2.9.4
   kubernetes_k8s:
-    - coredns:v1.9.3
-    - etcd:3.5.4-0
-    - kube-apiserver:v1.25.0
-    - kube-controller-manager:v1.25.0
-    - kube-proxy:v1.25.0
-    - kube-scheduler:v1.25.0
-    - pause:3.8
-    - coredns/coredns:v1.9.3
+    - name: coredns:v1.9.3
+    - name: etcd:3.5.4-0
+    - name: kube-apiserver:v1.25.0
+    - name: kube-controller-manager:v1.25.0
+    - name: kube-proxy:v1.25.0
+    - name: kube-scheduler:v1.25.0
+    - name: pause:3.8
+    - name: coredns/coredns:v1.9.3
   postgres:
-    - library/postgres:15.1-alpine
+    - name: library/postgres:15.1-alpine
+  ubuntu:
+    - name: ubuntu:20.04
+      lts: true
+    - name: ubuntu:22.04
+      lts: true
+    - name: ubuntu:24.04
+      lts: true
   vault:
-    - library/vault:1.11.4
+    - name: library/vault:1.11.4
